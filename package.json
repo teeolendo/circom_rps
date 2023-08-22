@@ -1,0 +1,12 @@
+{
+  "name": "rockpaperscissors-example",
+  "version": "1.0.0",
+  "description": "Circom Example",
+  "main": "index.js",
+  "author": "Tony Olendo",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "circomlib": "^2.0.5"
+  }
+}

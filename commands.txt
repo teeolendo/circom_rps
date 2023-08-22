@@ -1,0 +1,30 @@
+circom RPS.circom --r1cs --wasm --sym --c --json
+
+node generate_witness.js RPS.wasm input.json witness.wtns
+
+//Start a PTAU Ceremony
+snarkjs powersoftau new bn128 12 pot12_0000.ptau -v
+
+// First Contribution
+snarkjs powersoftau contribute pot12_0000.ptau pot12_0001.ptau --name="First contribution" -v
+
+// Circuit Specific Phase 2
+snarkjs powersoftau prepare phase2 pot12_0001.ptau pot12_final.ptau -v
+
+// Generate zkey
+snarkjs groth16 setup RPS.r1cs pot12_final.ptau RPS_0000.zkey
+
+// Second Contribution
+snarkjs zkey contribute RPS_0000.zkey RPS_0001.zkey --name="1st Contributor Name" -v
+
+//Export verification key
+snarkjs zkey export verificationkey RPS_0001.zkey verification_key.json
+
+// Generate a Proof
+snarkjs groth16 prove RPS_0001.zkey witness.wtns proof.json public.json
+
+// Generate Solidity 
+snarkjs zkey export solidityverifier RPS_0001.zkey verifier.sol
+
+// Generate CallData
+snarkjs generatecall
